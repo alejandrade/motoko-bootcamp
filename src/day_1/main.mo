@@ -1,6 +1,5 @@
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
-import L "mo:base/List";
 
 actor {
     stable var counter = 0; 
@@ -57,14 +56,7 @@ actor {
     };
 
     public func remove_from_array(numbers: [Nat], removed: Nat): async [Nat] {
-        var newList = L.nil<Nat>();
-        for (x in numbers.vals()) {
-            if (x != removed) {
-                newList := L.push(x, newList);
-            };
-        };
-
-        return L.toArray(newList);
+        return Array.filter(numbers, func(val: Nat) : Bool { removed != val });
     };
 
     public func selection_sort(numbers: [Nat]): async [Nat] {

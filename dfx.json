@@ -16,6 +16,10 @@
         "dist/hello_assets/"
       ],
       "type": "assets"
+    },
+    "day_1": {
+      "main": "src/day_1/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
