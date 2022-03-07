@@ -1,5 +1,5 @@
 service : {
-  list: () -> (vec text);
-  lookup: (text) -> (opt nat);
-  register: (text) -> ();
+  AssociationExists: (text) -> (bool);
+  associate: (nat, text) -> (nat);
+  nftAssociated: (nat) -> (bool);
 }

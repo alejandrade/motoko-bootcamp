@@ -1,38 +1,40 @@
+import HashMap "mo:base/HashMap";
+import Nat "mo:base/Nat";
 import Text "mo:base/Text";
-import Map "mo:base/HashMap";
-import Array "mo:base/Array";
+import Option "mo:base/Option";
 import Iter "mo:base/Iter";
-import L "mo:base/List";
+import Hash "mo:base/Hash";
 
 actor {
+    private stable var associatedGameByTokenId : [(Nat, Text)] = [];
+    private let associatedGameByTokenByIdMap : HashMap.HashMap<Nat, Text> = HashMap.fromIter<Nat, Text>(associatedGameByTokenId.vals(), 10, Nat.equal, Hash.hash);
 
-  stable var entries : [(Text, Nat)] = [];
+    private stable var associatedGameByAssociation : [(Text, Nat)] = [];
+    private let associatedGameByAssociationMap : HashMap.HashMap<Text, Nat> = HashMap.fromIter<Text, Nat>(associatedGameByAssociation.vals(), 10, Text.equal, Text.hash);
 
-  let map = Map.fromIter<Text,Nat>(
-    entries.vals(), 10, Text.equal, Text.hash);
+    public func associate(tokenId : Nat, associationId : Text) : async Nat {
+        associatedGameByTokenByIdMap.put(tokenId, associationId);
+        associatedGameByAssociationMap.put(associationId, tokenId);
+        return tokenId;
+    };
 
-  public func register(name : Text) : async () {
-    switch (map.get(name)) {
-      case null  {
-        map.put(name, map.size());
-      };
-      case (?id) { };
-    }
-  };
+	public func nftAssociated(tokenId : Nat) : async Bool {
+		return Option.isSome(associatedGameByTokenByIdMap.get(tokenId));
+	};
 
-  public func lookup(name : Text) : async ?Nat {
-    map.get(name);
-  };
+    public func AssociationExists(associationId : Text) : async Bool {
+        return Option.isSome(associatedGameByAssociationMap.get(associationId));
+    };
 
-  public func list(): async [Text] {
-    return Iter.toArray(map.keys());
-  };
+    system func preupgrade() {
+        associatedGameByTokenId := Iter.toArray(associatedGameByTokenByIdMap.entries());
+        associatedGameByAssociation := Iter.toArray(associatedGameByAssociationMap.entries());
 
-  system func preupgrade() {
-    entries := Iter.toArray(map.entries());
-  };
+    };
 
-  system func postupgrade() {
-    entries := [];
-  };
+    system func postupgrade() {
+        associatedGameByTokenId := [];
+        associatedGameByAssociation := [];
+    };
+
 };

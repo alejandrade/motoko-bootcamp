@@ -20,6 +20,10 @@
     "day_1": {
       "main": "src/day_1/main.mo",
       "type": "motoko"
+    },
+    "nature_flight_nft": {
+      "main": "src/nature_flight_nft/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
